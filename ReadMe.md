@@ -34,4 +34,6 @@
 
 ### TODO
 
-- 예외페이지제작
+- REST API 명세페이지 or SWAGGER 연동
+- 예외 명세
+- REST API 버전관리 하는법
