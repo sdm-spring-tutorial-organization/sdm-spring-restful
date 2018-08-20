@@ -1,4 +1,4 @@
-package example.app;
+package example.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class BookResourceQuery implements Serializable {
 
-    // private static final long serialVersionUID = ;
+    private static final long serialVersionUID = -7806623583554824333L;
 
     private String name;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

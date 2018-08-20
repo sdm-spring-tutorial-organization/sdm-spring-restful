@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -23,26 +24,31 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     MessageSource messageSource;
 
+    // == 예외클래스와 오류메시지를 패밍 ==
     private final Map<Class<? extends Exception>, String> messageMappings =
             Collections.unmodifiableMap(new LinkedHashMap() {
                 {
                     put(HttpMessageNotReadableException.class, "Request body is invalid");
+                    put(MethodArgumentNotValidException.class, "Request value is invalid");
                 }
             });
 
+    // == 오류메세지를 가져오기 위한 메서드 ==
     private String resolveMessage(Exception ex, String defaultMessage) {
         return messageMappings.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(ex.getClass()))
                 .findFirst().map(Map.Entry::getValue).orElse(defaultMessage);
     }
 
+    // == REST 에러 생성 ==
     private ApiError createApiError(Exception ex, String defaultMessage) {
         ApiError apiError = new ApiError();
-        apiError.setMessage(resolveMessage(ex, ex.getMessage()));
-        apiError.setDocumentationUrl(defaultMessage);
+        apiError.setMessage(resolveMessage(ex, defaultMessage));
+        apiError.setDocumentationUrl("http://localhost:8080/api/errors");
         return apiError;
     }
 
+    // == REST API 오류 캐치 ==
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(
             Exception ex,
@@ -54,6 +60,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, apiError, headers, status, request);
     }
 
+    // == 시스템 예외 처리 ==
+    @ExceptionHandler
+    public ResponseEntity<Object> handleSystemException(Exception ex, WebRequest request) {
+        ApiError apiError = createApiError(ex, "System error is occured");
+        return super.handleExceptionInternal(ex, apiError, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    // == REST API Valid 체크 (상세 정보 처리) ==
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

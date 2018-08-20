@@ -1,25 +1,27 @@
 package example.app;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import example.exception.BookResourceNotFoundException;
+import example.model.BookResource;
+import example.model.BookResourceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
-
 @CrossOrigin
 @RestController
 @RequestMapping("books")
 public class BooksRestController {
+
+    @Autowired
+    ObjectMapper bookMapper;
 
     @Autowired
     BookService bookService;
@@ -35,6 +37,9 @@ public class BooksRestController {
         resource.setBookId(book.getBookId());
         resource.setName(book.getName());
         resource.setPublishedDate(book.getPublishedDate());
+        resource.setAuthors(book.getAuthors());
+        resource.setPublisher(book.getPublisher());
+
         return resource;
     }
 
@@ -47,19 +52,21 @@ public class BooksRestController {
         BookResource newBook = new BookResource();
         newBook.setName(newResource.getName());
         newBook.setPublishedDate(newResource.getPublishedDate());
+        newBook.setAuthors(newResource.getAuthors());
+        newBook.setPublisher(newResource.getPublisher());
         BookResource createBook = bookService.create(newBook);
 
         // == URI조립 (기존방식) ==
         // String resourceUri = "http://localhost:8080/books/" + createBook.getBookId();
 
-        // == URI조립 (UriComponentsBuilder방식) ==
-        URI resourceUri = uriBuilder.path("books/{bookId}")
-                .buildAndExpand(createBook.getBookId()).encode().toUri();
-
         // == URI조립 (MvcUriComponentBuilder방식) ==
         // URI resourceUri = MvcUriComponentsBuilder.relativeTo(uriBuilder)
         //         .withMethodCall(on(BooksRestController.class))
         //         .getBook(createBook.getBookId()).build().encode().toUri();
+
+        // == URI조립 (UriComponentsBuilder방식) ==
+        URI resourceUri = uriBuilder.path("books/{bookId}")
+                .buildAndExpand(createBook.getBookId()).encode().toUri();
 
         return ResponseEntity.created(resourceUri).build();
     }
@@ -75,6 +82,8 @@ public class BooksRestController {
         book.setBookId(bookId);
         book.setName(resource.getName());
         book.setPublishedDate(resource.getPublishedDate());
+        book.setAuthors(resource.getAuthors());
+        book.setPublisher(resource.getPublisher());
         bookService.update(book);
     }
 
@@ -98,6 +107,8 @@ public class BooksRestController {
             resource.setBookId(book.getBookId());
             resource.setName(book.getName());
             resource.setPublishedDate(book.getPublishedDate());
+            resource.setAuthors(book.getAuthors());
+            resource.setPublisher(book.getPublisher());
             return resource;
         }).collect(Collectors.toList());
     }

@@ -1,7 +1,8 @@
-package example.app;
+package example.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,8 +13,10 @@ public class BookResource implements Serializable {
 
     // == [주의] Json 필드명 == 자바빈즈 프로퍼티명 ==
     private String bookId;
+    @NotNull
     private String name;
     private List<String> authors;
+    @DateTimeFormat(pattern="yyyy-MM-dd") // ISO 8061
     private LocalDate publishedDate;
     private BookPublisher publisher;
 

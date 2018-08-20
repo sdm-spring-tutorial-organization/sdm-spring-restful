@@ -1,5 +1,7 @@
 package example.app;
 
+import example.model.BookResource;
+import example.model.BookResourceQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -23,8 +25,13 @@ public class BookService {
         BookResource book = new BookResource();
         book.setBookId("1234");
         book.setName("무한도전");
-        book.setAuthors(Arrays.asList("유재석, 박명수, 정준하, 정형돈, 노홍철, 하하"));
         book.setPublishedDate(LocalDate.of(2018, 8, 20));
+
+        // == authors ==
+        List<String> authors = Arrays.asList("유재석, 박명수, 정준하, 정형돈, 노홍철, 하하");
+        book.setAuthors(authors);
+
+        // == publisher ==
         BookResource.BookPublisher publisher = new BookResource.BookPublisher();
         publisher.setName("MBC");
         publisher.setTel("02-1234-5678");

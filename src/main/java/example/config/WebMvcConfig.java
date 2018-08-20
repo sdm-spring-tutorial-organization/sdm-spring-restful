@@ -26,7 +26,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         return new MappingJackson2HttpMessageConverter(
-                // ==
+                // == Json 공백 처리 ==
                 Jackson2ObjectMapperBuilder.json().indentOutput(true).build()
         );
     }
