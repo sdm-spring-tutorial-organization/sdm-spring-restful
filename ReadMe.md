@@ -3,7 +3,15 @@
 
 > Spring REST API 아키택처 구현 프로젝트
 
-### REST 규칙
+### ENV
+
+- MacOS 10.13.6
+- Java 8
+- Spring 2.0.8
+- Maven 4.0
+- IntelliJ
+
+### REST Rules
 
 1. Web 리소스로 공개
 2. URI를 통한 리소스 식별
@@ -14,7 +22,7 @@
 7. 연결된 리소스에 대한 링크
 8. 버전관리와 하위버전에 대한 호환보장
 
-### 프로젝트 구현기능
+### Feature
 
 - Servlet Container 설정
 - RestController 구현
