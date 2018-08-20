@@ -1,0 +1,10 @@
+## git ignore ##
+
+## intellij ##
+.idea/*
+*.iml
+*.log
+
+## prod ##
+out/*
+target/*
